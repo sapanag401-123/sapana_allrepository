@@ -1,5 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import { errorHandler } from "./middleware/errorHandler.middleware";
+import userRoutes from "./routes/user.routes";
+
 // @types/express
 //creating app instance
 const app = express();
@@ -21,6 +23,9 @@ app.get("/", (req: Request, res: Response, next: NextFunction) =>{
     });
 
 });
+
+//using routes
+app.use("/users", userRoutes);
 
 
 //path not found
@@ -45,6 +50,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) =>{
 
 //error handler
 app.use(errorHandler);
+
 
 export default app;
 
