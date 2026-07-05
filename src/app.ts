@@ -1,6 +1,9 @@
 import express, { NextFunction, Request, Response } from "express";
 import { errorHandler } from "./middleware/errorHandler.middleware";
-import userRoutes from "./routes/user.routes";
+import authRoutes from "./routes/auth.routes";
+
+
+
 
 // @types/express
 //creating app instance
@@ -25,7 +28,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) =>{
 });
 
 //using routes
-app.use("/users", userRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 
 //path not found

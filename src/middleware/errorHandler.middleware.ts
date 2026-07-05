@@ -12,6 +12,11 @@ export const errorHandler = (
     const statusCode = error?.statusCode ?? 500;
     const success = false;
 
+    // if (error.code === 11000) {
+    //     statusCode =400;
+    //     status ="false",
+    // },
+
     res.status(statusCode).json({
         message,
         success,
