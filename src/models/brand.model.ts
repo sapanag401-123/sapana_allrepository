@@ -15,15 +15,16 @@ const brandSchema = new Schema<IBrand>(
       required: [true, "Brand name is required"],
       trim: true,
       unique: true,
-      minlength: 2,
-      maxlength: 100,
+      minLength: 2,
+      maxLength: 100,
     },
 
     description: {
       type: String,
       required: [true, "Description is required"],
       trim: true,
-      maxlength: 500,
+      minLength: 25,
+      maxLength: 500,
     },
 
     logo: {

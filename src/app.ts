@@ -1,7 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import { errorHandler } from "./middleware/errorHandler.middleware";
 import brandRoutes from "./routes/brand.routes";
-
 // import authRoutes from "./routes/auth.routes";
 
 

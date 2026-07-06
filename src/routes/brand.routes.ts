@@ -1,23 +1,23 @@
 import { Router } from "express";
 
 import {
-  createBrand,
-  getAllBrands,
-  getBrandById,
-  updateBrand,
-  deleteBrand,
+  create,
+  getAll,
+  getById,
+  update,
+  remove,
 } from "../controllers/brand.controller";
 
 const router = Router();
 
-router.post("/", createBrand);
+router.post("/", create);
 
-router.get("/", getAllBrands);
+router.get("/", getAll);
 
-router.get("/:id", getBrandById);
+router.get("/:id", getById);
 
-router.put("/:id", updateBrand);
+router.put("/:id", update);
 
-router.delete("/:id", deleteBrand);
+router.delete("/:id", remove);
 
 export default router;

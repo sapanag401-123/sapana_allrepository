@@ -3,14 +3,12 @@ import User from "../models/user.model";
 import {hashPassword, comparePassword} from "../utils/bcrypt.utils";
 import appError from "../utils/appError.utils";
 
-
 // Register
 export const register = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => {
-    try {
         const { full_name, email, password, phone_number } = req.body;
 
         if (!full_name) {
@@ -45,9 +43,7 @@ export const register = async (
             status: "success",
             data: user,
         });
-    } catch (error) {
-        next(error);
-    }
+
 };
 
 //login
