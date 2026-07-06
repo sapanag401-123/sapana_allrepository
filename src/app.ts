@@ -1,9 +1,13 @@
 import express, { NextFunction, Request, Response } from "express";
 import { errorHandler } from "./middleware/errorHandler.middleware";
-import authRoutes from "./routes/auth.routes";
+import brandRoutes from "./routes/brand.routes";
+
+// import authRoutes from "./routes/auth.routes";
 
 
+//importing routes
 
+import routes from "./routes";
 
 // @types/express
 //creating app instance
@@ -13,10 +17,7 @@ const app = express();
 app.use(express.json({ limit: "10mb"}));
 
 
-//using routes
-
 //heaith route
-
 app.get("/", (req: Request, res: Response, next: NextFunction) =>{
     res.status(200).json({
         message: "Server is up & running",
@@ -28,7 +29,10 @@ app.get("/", (req: Request, res: Response, next: NextFunction) =>{
 });
 
 //using routes
-app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1", routes);
+app.use("/api/brands", brandRoutes);
+// app.use("/api/v1/user", userRoutes);
+
 
 
 //path not found

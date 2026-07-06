@@ -2,17 +2,24 @@
 
 
  //hash password
- export const hashPassword = async (Password: string) => {
-    try{
-
-        //salt
+ export const hashPassword = async (password: string) => {
+    try {
         const salt = await bcrypt.genSalt(10);
 
-        //hash
-        const hash = await bcrypt.hash("password", salt);
+        const hash = await bcrypt.hash(password, salt);
+
         return hash;
-    }catch (error){
+    } catch (error) {
         console.log(error);
+        throw error;
+    }
+};
+
+ //compare
+ export const comparePassword = async (password: string, hash: string) =>{
+    try{
+        return await bcrypt.compare(password, hash);
+    }catch (error){
         throw error;
     }
  };

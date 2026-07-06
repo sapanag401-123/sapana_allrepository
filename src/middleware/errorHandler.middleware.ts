@@ -7,6 +7,18 @@ export const errorHandler = (
     next: NextFunction,
 ) => {
     console.log(error);
+
+    // Handle duplicate email
+  if (error.code === 11000) {
+    return res.status(409).json({
+      message: "User already exists with provided email",
+      success: false,
+      status: "fail",
+      data: null,
+    });
+  }
+
+
     const message = error?.message ?? "Internal server error";
     const status = error?.status ?? "error";
     const statusCode = error?.statusCode ?? 500;
