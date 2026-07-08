@@ -10,6 +10,8 @@ export const register = async (
     next: NextFunction
 ) => {
         const { full_name, email, password, phone_number } = req.body;
+        const file = req.file;
+        console.log(file);
 
         if (!full_name) {
             throw new appError("full_name is required", 400);
