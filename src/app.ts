@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import { errorHandler } from "./middleware/errorHandler.middleware";
-import brandRoutes from "./routes/brand.routes";
+// import brandRoutes from "./routes/brand.routes";
 // import authRoutes from "./routes/auth.routes";
 
 
@@ -29,7 +29,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) =>{
 
 //using routes
 app.use("/api/v1", routes);
-app.use("/api/brands", brandRoutes);
+// app.use("/api/brands", brandRoutes);
 // app.use("/api/v1/user", userRoutes);
 
 

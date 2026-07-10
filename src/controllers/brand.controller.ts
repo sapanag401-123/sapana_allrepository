@@ -2,14 +2,23 @@ import { NextFunction, Request, Response } from "express";
 import Brand from "../models/brand.model";
 import appError from "../utils/appError.utils";
 import { catchAsync } from "../utils/catchAsync.utils";
+import { upload } from "../utils/cloudinary.utils";
+
+const uploadFolder = "/brands";
 
 // Create Brand
 export const create = catchAsync(async (req: Request, res: Response) => {
   const { name, description } = req.body;
   // req.file / files
+    const file = req.file;
+
 
   if (!name) {
     throw new appError("name required.", 400);
+  }
+
+if (!file) {
+    throw new appError("logo is required.", 400);
   }
 
   const existingBrand = await Brand.findOne({ name });
@@ -22,6 +31,16 @@ export const create = catchAsync(async (req: Request, res: Response) => {
     name,
     description,
   });
+
+  const { path, public_id } = await upload(file, uploadFolder);
+
+  //profile_image = {path:'',public_id:''}
+  // profile_image = ''
+
+  brand.logo = {
+    path,
+    public_id,
+  };
 
   // * handle logo upload
 

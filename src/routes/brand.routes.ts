@@ -7,17 +7,19 @@ import {
   update,
   remove,
 } from "../controllers/brand.controller";
+import { uploader } from "../middleware/multer.middleware";
+const upload = uploader();
 
 const router = Router();
 
-router.post("/", create);
+router.post("/",upload.single("logo"), create);
 
 router.get("/", getAll);
 
 router.get("/:id", getById);
 
-router.put("/:id", update);
+router.put("/:id", upload.single("logo"), update);
 
-router.delete("/:id", remove);
+router.delete ("/:id", remove);
 
 export default router;

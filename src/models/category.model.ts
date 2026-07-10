@@ -1,10 +1,12 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { IImage } from "../types/global.types";
+import ImageSchema from "./image.model";
 
 //* Interface
 export interface ICategory extends Document {
   name: string;
   description?: string;
-  logo: string;
+  logo: IImage;
 }
 
 //* Category Schema
@@ -27,9 +29,8 @@ const categorySchema = new Schema<ICategory>(
     },
 
     logo: {
-      type: String,
+      type: ImageSchema,
       required: [true, "Logo is required"],
-      trim: true,
     },
   },
   {

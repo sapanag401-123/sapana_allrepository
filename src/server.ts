@@ -1,13 +1,16 @@
+import "dotenv/config";
 import app from "./app";
 import { connectDatabase } from "./config/db.config";
+import ENV_CONFIG from "./config/env.config";
 
-const PORT = 8081;
-const DB_URL = "mongodb://localhost:27017/team_14_db"
+//dotenv.config()
+const PORT = ENV_CONFIG.PORT;
+const DB_URI = ENV_CONFIG.DB_URI;
 
 
 
 //connect database
-connectDatabase(DB_URL);
+connectDatabase(DB_URI);
 
 
 //listen 

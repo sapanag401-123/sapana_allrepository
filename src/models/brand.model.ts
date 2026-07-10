@@ -1,10 +1,11 @@
 import mongoose, { Schema, Document } from "mongoose";
-
+import ImageSchema from "./image.model";
+import { IImage } from "../types/global.types";
 // Interface
 export interface IBrand extends Document {
   name: string;
   description: string;
-  logo: string;
+  logo: IImage;
 }
 
 // Brand Schema
@@ -28,9 +29,8 @@ const brandSchema = new Schema<IBrand>(
     },
 
     logo: {
-      type: String,
+      type:ImageSchema ,
       required: [true, "Logo is required"],
-      trim: true,
     },
   },
   {

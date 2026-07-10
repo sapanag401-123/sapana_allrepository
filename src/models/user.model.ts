@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import ImageSchema from "./image.model";
 
 // User Schema
 const userSchema = new mongoose.Schema(
@@ -22,7 +23,9 @@ const userSchema = new mongoose.Schema(
     },
 
     profile_image:{
-      type: String,
+      type : ImageSchema,
+      default:null,
+
 
     },
     role:{
