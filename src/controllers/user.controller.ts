@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../models/user.model";
-import appError from "../utils/appError.utils";
+import AppError from "../utils/appError.utils";
 import { catchAsync } from "../utils/catchAsync.utils";
+import { Role } from "../types/enum.types";
 
-// get all users
+//! get all users
 export const getAll = async (
   req: Request,
   res: Response,
@@ -11,7 +12,7 @@ export const getAll = async (
 ) => {
   try {
     //* find all users
-    const users = await User.find({ role: "USER" });
+    const users = await User.find({ role: Role.USER });
 
     //* send success response
     res.status(200).json({
@@ -25,7 +26,7 @@ export const getAll = async (
   }
 };
 
-// get all admins
+//! get all admins
 export const getAllAdmins = async (
   req: Request,
   res: Response,
@@ -35,7 +36,7 @@ export const getAllAdmins = async (
     //* find all users
     const admins = await User.find({
       role: {
-        $in: ["ADMIN", "SUPER ADMIN"],
+        $in: [Role.ADMIN, Role.SUPER_ADMIN],
       },
     });
 
@@ -51,7 +52,7 @@ export const getAllAdmins = async (
   }
 };
 
-// get user by id
+//! get user by id
 export const getById = async (
   req: Request,
   res: Response,
@@ -63,7 +64,7 @@ export const getById = async (
     const user = await User.findOne({ _id: id });
 
     if (!user) {
-      throw new appError("user not found", 404);
+      throw new AppError("user not found", 404);
     }
 
     res.status(200).json({
@@ -77,15 +78,16 @@ export const getById = async (
   }
 };
 
+//* delete user  -> pramod
+//? ready to make changed on this task
 
-//delete
 //! delete users
 
 export const deleteUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) {
-      return next(new appError(" user not found", 404));
+      return next(new AppError(" user not found", 404));
     }
     res.status(200).json({
       success: true,

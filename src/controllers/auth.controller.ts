@@ -4,6 +4,10 @@ import { hashPassword, comparePassword } from "../utils/bcrypt.utils";
 import AppError from "../utils/appError.utils";
 import { catchAsync } from "../utils/catchAsync.utils";
 import { upload } from "../utils/cloudinary.utils";
+import { generateJwtToken } from "../utils/jwt.utils";
+import { IJwtPayload } from "../types/global.types";
+import ENV_CONFIG from "../config/env.config";
+import { sendResponse } from "../utils/sendResponse.utils";
 
 const uploadFolder = "/profile_images";
 
@@ -85,13 +89,29 @@ export const login = catchAsync(
     }
 
     //todo: generate jwt token
+    const payload: IJwtPayload = {
+      _id: user._id,
+      email: user.email,
+      role: user.role,
+    };
+    const access_token = generateJwtToken(payload);
 
+    res.cookie("access_token", access_token, {
+      httpOnly: ENV_CONFIG.NODE_ENV === "development" ? false : true,
+      secure: ENV_CONFIG.NODE_ENV === "development" ? false : true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: ENV_CONFIG.NODE_ENV === "development" ? "lax" : "none",
+    });
+
+    const { password: p, ...rest } = user.toObject();
     //* send success response
-    res.status(201).json({
+    sendResponse(res, {
       message: "Login success",
-      status: "success",
-      success: true,
-      data: user,
+      statusCode: 201,
+      data: {
+        user: rest,
+        access_token,
+      },
     });
   },
 );

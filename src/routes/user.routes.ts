@@ -1,5 +1,5 @@
 import express from "express";
-import { getAll, getAllAdmins, getById } from "../controllers/user.controller";
+import { getAll, getAllAdmins, getById, deleteUser } from "../controllers/user.controller";
 
 const router = express.Router();
 
@@ -11,5 +11,8 @@ router.get("/admins", getAllAdmins);
 
 //* get user by id
 router.get("/:id", getById);
+
+//* delete user 
+router.delete("/:id", deleteUser);
 
 export default router;

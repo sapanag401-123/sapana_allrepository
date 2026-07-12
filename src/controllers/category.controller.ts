@@ -2,9 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import Category from "../models/category.model";
 import { catchAsync } from "../utils/catchAsync.utils";
 import AppError from "../utils/appError.utils";
-import { upload } from "../utils/cloudinary.utils";
-
-const uploadFolder = "/categories";
 
 //* get all -> sapana
 
@@ -43,38 +40,19 @@ export const getById = catchAsync(
 //* create  -> ashmita
 export const create = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    // authentication
+
     const { name, description } = req.body;
 
-    const file = req.file;
-
-    if (!name) {
-      throw new AppError("name is required", 404);
-    }
-  //   if (!description) 
-  //     throw new AppError("description is required", 404);
-  // }
-
-    if (!file) {
-    throw new AppError("logo is required.", 400);
-  }
+    if (!name) throw new AppError("name is required", 404);
+    if (!description) throw new AppError("description is required", 404);
 
     const existingCategory = await Category.findOne({ name });
     if (existingCategory) {
       throw new AppError("name already exists", 404);
     }
 
-    const category = new Category({
-       name, 
-       description 
-      });
-
-      const { path, public_id } = await upload(file, uploadFolder);
-      category.logo ={
-        path,
-        public_id,
-      };
-
-      //save category
+    const category = new Category({ name, description });
     await category.save();
 
     res.status(201).json({

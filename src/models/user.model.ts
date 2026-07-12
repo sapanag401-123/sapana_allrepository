@@ -1,14 +1,15 @@
 import mongoose from "mongoose";
+import { Role } from "../types/enum.types";
 import ImageSchema from "./image.model";
 
-// User Schema
+//* user schema
 const userSchema = new mongoose.Schema(
   {
     full_name: {
       type: String,
-      required: [true,"full_name is required"],
-      minlength: [3, "name must be at 3 character long"],
-      trim:  true,
+      required: [true, "full_name is required"],
+      minLength: [3, "name must be at least 3 character long"],
+      trim: true,
     },
     email: {
       type: String,
@@ -21,31 +22,24 @@ const userSchema = new mongoose.Schema(
       required: [true, "password is required"],
       select: false,
     },
-
-    profile_image:{
-      type : ImageSchema,
-      default:null,
-
-
+    profile_image: {
+      type: ImageSchema,
+      default: null,
     },
-    role:{
+    role: {
       type: String,
-      enum: ["USER","ADMIN","SUPER ADMIN"],
-      default: "USER",
+      enum: Object.values(Role),
+      default: Role.USER,
     },
-
-
-    phone_number:{
+    phone: {
       type: String,
       required: false,
-      maxLength: [10, "phone number at nost be 10 digits long"],
-
+      maxLength: [10, "phone number at most be  10  digits long"],
     },
   },
-  {timestamps: true,}
+  { timestamps: true },
 );
 
-// Create User Model
+//* user model
 const User = mongoose.model("user", userSchema);
-
 export default User;
