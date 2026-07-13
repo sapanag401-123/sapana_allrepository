@@ -1,11 +1,11 @@
 import express from "express";
 import {
-  create,
-  remove,
-  getAll,
-  getById,
-  update,
-} from "../controllers/brand.controller";
+    create,
+    getAll,
+    getById,
+    update,
+    deleteproduct,
+} from "../controllers/product.controller";
 import { uploader } from "../middleware/multer.middleware";
 import { authenticate } from "../middleware/auth.middleware";
 import { All_Admins } from "../types/enum.types";
@@ -27,6 +27,6 @@ router.post("/", upload.single("logo"), authenticate(All_Admins), create);
 router.put("/:id", upload.single("logo"), authenticate(All_Admins), update);
 
 // delete
-router.delete("/:id", authenticate(All_Admins), remove);
+router.delete("/:id", authenticate(All_Admins), deleteproduct);
 
 export default router;

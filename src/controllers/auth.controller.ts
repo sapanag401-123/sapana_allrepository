@@ -3,7 +3,7 @@ import User from "../models/user.model";
 import { hashPassword, comparePassword } from "../utils/bcrypt.utils";
 import AppError from "../utils/appError.utils";
 import { catchAsync } from "../utils/catchAsync.utils";
-import { upload } from "../utils/cloudinary.utils";
+import { deleteFile, upload } from "../utils/cloudinary.utils";
 import { generateJwtToken } from "../utils/jwt.utils";
 import { IJwtPayload } from "../types/global.types";
 import ENV_CONFIG from "../config/env.config";
@@ -50,12 +50,14 @@ export const register = catchAsync(
     //! save user
     await user.save();
 
+    //* converting mongoose doc to js object
+    const { password: user_pass, ...rest } = user.toObject();
+
     //* success response
-    res.status(201).json({
+    sendResponse(res, {
       message: "Account created",
-      success: true,
-      status: "success",
-      data: user,
+      statusCode: 201,
+      data: rest,
     });
   },
 );
@@ -116,7 +118,42 @@ export const login = catchAsync(
   },
 );
 
+//* logout
+
 //* get profile
+
+//* change profile image
+export const changeProfileImage = catchAsync(
+  async (req: Request, res: Response) => {
+    const { _id } = req.user;
+    const file = req.file;
+    if (!file) {
+      throw new AppError("profile image is required", 400);
+    }
+    const user = await User.findOne({ _id: _id });
+    if (!user) {
+      throw new AppError("Profile not found", 400);
+    }
+
+    //! delete old image
+    if (user.profile_image && user.profile_image?.public_id) {
+      await deleteFile(user.profile_image.public_id);
+    }
+
+    const { path, public_id } = await upload(file, uploadFolder);
+    user.profile_image = {
+      path,
+      public_id,
+    };
+
+    //* send success response
+    sendResponse(res, {
+      message: "Profile updated",
+      statusCode: 200,
+      data: user,
+    });
+  },
+);
 
 //* change password
 

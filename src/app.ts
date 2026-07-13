@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import { errorHandler } from "./middleware/errorHandler.middleware";
-// import brandRoutes from "./routes/brand.routes";
+import cookieParser from "cookie-parser";
+import brandRoutes from "./routes/brand.routes";
 // import authRoutes from "./routes/auth.routes";
 
 
@@ -14,6 +15,7 @@ const app = express();
 
 //using malwares
 app.use(express.json({ limit: "10mb"}));
+app.use(cookieParser());
 
 
 //heaith route
@@ -29,7 +31,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) =>{
 
 //using routes
 app.use("/api/v1", routes);
-// app.use("/api/brands", brandRoutes);
+app.use("/api/v1/brands", brandRoutes);
 // app.use("/api/v1/user", userRoutes);
 
 
