@@ -130,3 +130,11 @@ export const deleteproduct = catchAsync(
     });
   }
 );
+
+//* get by category
+
+//* get by brand
+
+//* get new arrivals
+
+//* get featured

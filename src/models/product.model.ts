@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, "name is required"],
-      minLength: [3, "name must be at least 3 character long"],
+      minLength: 3, 
       trim: true,
     },
     category: {
@@ -19,13 +19,15 @@ const productSchema = new mongoose.Schema(
     price: {
       type: Number,
       required: [true, "price is required"],
+      min: 0,
+
     },
     stock: {
       type: Number,
       required: [true, "Stock is required"],
       default: null,
     },
-    profile_image: {
+    image: {
     type: ImageSchema,
     default: null,
     },

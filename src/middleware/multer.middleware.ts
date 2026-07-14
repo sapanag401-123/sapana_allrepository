@@ -60,3 +60,5 @@ export const uploader = ()=>{
 
 return upload;
 }
+
+//add product model

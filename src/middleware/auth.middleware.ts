@@ -55,3 +55,5 @@ export const authenticate = (roles?: Role[]) => {
     }
   };
 };
+
+//add product model
