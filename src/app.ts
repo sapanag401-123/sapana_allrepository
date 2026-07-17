@@ -2,6 +2,8 @@ import express, { NextFunction, Request, Response } from "express";
 import { errorHandler } from "./middleware/errorHandler.middleware";
 import cookieParser from "cookie-parser";
 import brandRoutes from "./routes/brand.routes";
+import productRoutes from "./routes/product.routes";
+
 // import authRoutes from "./routes/auth.routes";
 
 
@@ -32,6 +34,8 @@ app.get("/", (req: Request, res: Response, next: NextFunction) =>{
 //using routes
 app.use("/api/v1", routes);
 app.use("/api/v1/brands", brandRoutes);
+app.use("/api/v1/products", productRoutes);
+
 // app.use("/api/v1/user", userRoutes);
 
 

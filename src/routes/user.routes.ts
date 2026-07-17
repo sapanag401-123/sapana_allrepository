@@ -16,3 +16,6 @@ router.get("/:id", getById);
 router.delete("/:id", deleteUser);
 
 export default router;
+
+// sapanag401_db_user
+// lprrnc9U5DLSQfRO

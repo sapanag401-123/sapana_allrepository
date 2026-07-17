@@ -7,8 +7,32 @@ import AppError from "../utils/appError.utils";
 
 export const getAll = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const categories = await Category.find();
 
+    //filter
+    const { query } = req.query;
+    const filter: Record<string, any> = {};
+
+    if (query){
+      // filter.name = {
+        // $regex: query,
+        // $options: "i",
+        filter.$or = [
+          {
+            name: {
+             $regex: query,
+             $options: "i",
+
+            },
+          },
+          {
+            description:{
+              $regex: query,
+             $options: "i",
+            },
+          },
+        ];
+        }
+    const categories = await Category.find(filter);
     res.status(200).json({
       success: true,
       count: categories.length,

@@ -9,7 +9,10 @@ import { IJwtPayload } from "../types/global.types";
 import ENV_CONFIG from "../config/env.config";
 import { sendResponse } from "../utils/sendResponse.utils";
 import { sendEmail } from "../utils/emailServer.utils";
-
+import {
+  accountCreatedHtml,
+  newLoginDetectedHtml,
+} from "../utils/emailTemplate.utils";
 
 const uploadFolder = "/profile_images";
 
@@ -19,16 +22,6 @@ export const register = catchAsync(
     //* body
     const { full_name, email, password, phone } = req.body;
     const file = req.file;
-    console.log(file);
-
-    if (!full_name) {
-      throw new AppError("full_name is required", 400);
-    }
-    if (!email) throw new AppError("email is required", 400);
-
-    if (!password) {
-      throw new AppError("password is required", 400);
-    }
 
     const user = new User({ email, full_name, phone });
 
@@ -56,12 +49,12 @@ export const register = catchAsync(
     sendEmail({
       to: user.email,
       subject: "Account created",
-      html: `<div>
-      <h2>Account created</h2>
-      <p>Hello ${user.full_name}, welcome to out service</p>
-      </div>`,
+      html: accountCreatedHtml({
+        full_name: user.full_name,
+        email: user.email,
+        createdAt: user.createdAt,
+      }),
     });
-
 
     //* converting mongoose doc to js object
     const { password: user_pass, ...rest } = user.toObject();
@@ -103,12 +96,25 @@ export const login = catchAsync(
       throw new AppError("credentials does not matched", 400);
     }
 
-    //todo: generate jwt token
+    //* send login detected email
+    sendEmail({
+      to: user.email,
+      subject: "Login Detected",
+      html: newLoginDetectedHtml({
+        full_name: user.full_name,
+        email: user.email,
+        loginTime: new Date(Date.now()),
+        device: req.headers["user-agent"]!!,
+      }),
+    });
+
+    //* generate jwt token
     const payload: IJwtPayload = {
       _id: user._id,
       email: user.email,
       role: user.role,
     };
+
     const access_token = generateJwtToken(payload);
 
     res.cookie("access_token", access_token, {

@@ -2,16 +2,18 @@ import "dotenv/config";
 
 const ENV_CONFIG = {
   //* environment
-  NODE_ENV: process.env.NODE_ENV,
+  NODE_ENV: process.env.NODE_ENV!!,
   PORT: process.env.PORT,
+  APP_NAME: process.env.APP_NAME,
+  FRONT_END_URL: process.env.FRONT_END_URL,
 
   //* Database
   DB_URI: process.env.DB_URI!!,
 
   //* cloudinary
-  CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME!!,
-  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY!!,
-  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET!!,
+  CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
 
   //* jwt
   JWT_SECRET: process.env.JWT_SECRET!!,

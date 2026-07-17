@@ -1,32 +1,70 @@
-import express from "express";
+import { Router } from "express";
 import {
-    create,
-    getAll,
-    getById,
-    update,
-    deleteproduct,
+  create,
+  getAll,
+  getById,
+  getFeaturedProducts,
+  getNewArrivals,
+  getByCategory,
+  getByBrand,
 } from "../controllers/product.controller";
-import { uploader } from "../middleware/multer.middleware";
+
 import { authenticate } from "../middleware/auth.middleware";
+import { uploader } from "../middleware/multer.middleware";
 import { All_Admins } from "../types/enum.types";
 
+const router = Router();
 const upload = uploader();
 
-const router = express.Router();
-
-// getAll
+// get all
 router.get("/", getAll);
 
-// getById
+//getfeature
+router.get("/featured", getFeaturedProducts);
+
+//get newarrivals
+router.get("/new-arrivals", getNewArrivals);
+
+//get by category
+router.get("/category/:categoryId", getByCategory);
+
+//get by brand
+router.get("/brand/:brandId", getByBrand);
+
+//get by id
 router.get("/:id", getById);
 
-// create
-router.post("/", upload.single("logo"), authenticate(All_Admins), create);
+// Admin Routes
+router.post(
+  "/",
+  upload.fields([
+    {
+      name: "cover_image",
+      maxCount: 1,
+    },
+    {
+      name: "images",
+      maxCount: 5,
+    },
+  ]),
+  authenticate(All_Admins),
+  create,
+);
 
-// update
-router.put("/:id", upload.single("logo"), authenticate(All_Admins), update);
-
-// delete
-router.delete("/:id", authenticate(All_Admins), deleteproduct);
-
+//* update
+router.put(
+  "/",
+  upload.fields([
+    {
+      name: "cover_image",
+      maxCount: 1,
+    },
+    {
+      name: "images",
+      maxCount: 5,
+    },
+  ]),
+  authenticate(All_Admins),
+  create,
+);
 export default router;

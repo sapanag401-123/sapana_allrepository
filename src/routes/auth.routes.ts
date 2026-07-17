@@ -1,40 +1,41 @@
 import express from "express";
 import { uploader } from "../middleware/multer.middleware";
-import { register , login} from "../controllers/auth.controller";
-
+import {
+  register,
+  login,
+  changeProfileImage,
+} from "../controllers/auth.controller";
+import { authenticate } from "../middleware/auth.middleware";
+import { validate } from "../middleware/validator.middleware";
+import { registerUserSchema } from "../validators/auth.validator";
 
 const router = express.Router();
 
 const upload = uploader();
 
-// //multer disk sthorage
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) =>{
-//         const folder = "uploads/";
-//         cb(null, folder);
-//     },
-//     filename: function (req, file, cb) {
-//     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-//     cb(null, file.fieldname + '-' + uniqueSuffix)
-//   },
-// });
-
-
-
-//multer upload instance
-// const upload = multer({ dest: 'uploads/' })
-// const upload = multer({ storage: storage })
-
-
-
-
-
 //* register
-router.post("/register", upload.single("profile_image"), register);
+router.post(
+  "/register",
+  upload.single("profile_image"),
+  validate(registerUserSchema),
+  register,
+);
 
 //* login
 router.post("/login", login);
 
-export default router;
+//* change profile image
+router.put(
+  "/profile-image",
+  upload.single("profile_image"),
+  authenticate(),
+  changeProfileImage,
+);
 
-//filename vana ko change harna folder
+//* logout
+// router.post('/logout' ,logout)
+
+//* get profile
+// router.get('/me', profile)
+
+export default router;

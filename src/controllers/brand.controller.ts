@@ -3,6 +3,8 @@ import Brand from "../models/brand.model";
 import appError from "../utils/appError.utils";
 import { catchAsync } from "../utils/catchAsync.utils";
 import { upload } from "../utils/cloudinary.utils";
+import { sendResponse } from "../utils/sendResponse.utils";
+
 
 const uploadFolder = "/brands";
 
@@ -57,15 +59,42 @@ if (!file) {
 // Get All Brands
 export const getAll = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const brands = await Brand.find();
 
-    res.status(200).json({
-      success: true,
-      count: brands.length,
+   //filter
+    const { query, order = "DESC", sortBy = "createdAt" } = req.query;
+    const filter: Record<string, any> = {};
+
+    if (query){
+      // filter.name = {
+        // $regex: query,
+        // $options: "i",
+        filter.$or = [
+          {
+            name: {
+             $regex: query,
+             $options: "i",
+
+            },
+          },
+          {
+            description:{
+              $regex: query,
+             $options: "i",
+            },
+          },
+        ];
+        }
+    const brands = await Brand.find(filter).sort({
+      [sortBy as string]: order === "DESC" ? -1 : 1,
+    });
+    sendResponse(res, {
+      message: "Brands fetched",
       data: brands,
+      statusCode: 200,
     });
   },
 );
+// test
 
 // Get Brand By ID
 export const getById = catchAsync(

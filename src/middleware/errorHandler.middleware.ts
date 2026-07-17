@@ -1,39 +1,28 @@
-import { NextFunction, Request, Response } from "express"
+import { NextFunction, Request, Response } from "express";
 
 export const errorHandler = (
-    error: any,
-    req: Request,
-    res: Response,
-    next: NextFunction,
+  error: any,
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ) => {
-    console.log(error);
+  console.log(error);
+  const message = error?.message ?? "Internal server error";
+  let status = error?.status ?? "error";
+  let statusCode = error?.statusCode ?? 500;
+  const success = false;
 
-    // Handle duplicate email
-  if (error.code === 11000) {
-    return res.status(409).json({
-      message: "User already exists with provided email",
-      success: false,
-      status: "fail",
-      data: null,
-    });
+  if (error?.cause?.code === 11000) {
+    statusCode = 400;
+    status = "fail";
   }
 
-
-    const message = error?.message ?? "Internal server error";
-    const status = error?.status ?? "error";
-    const statusCode = error?.statusCode ?? 500;
-    const success = false;
-
-    // if (error.code === 11000) {
-    //     statusCode =400;
-    //     status ="false",
-    // },
-
-    res.status(statusCode).json({
-        message,
-        success,
-        status,
-        data: null,
-        originalError: error?.stack,
-    });
+  res.status(statusCode).json({
+    message,
+    success,
+    status,
+    data: null,
+    details: error?.errors ?? null,
+    original_error: error?.stack,
+  });
 };
