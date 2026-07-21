@@ -11,7 +11,7 @@ export const generateJwtToken = (payload: IJwtPayload) => {
       expiresIn: ENV_CONFIG.JWT_EXPIRES_IN as any,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw error;
   }
 };
@@ -21,7 +21,7 @@ export const verifyJwtToken = (token: string): IJwtReturn=> {
   try {
     return jwt.verify(token, ENV_CONFIG.JWT_SECRET) as IJwtReturn;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw error;
   }
 };

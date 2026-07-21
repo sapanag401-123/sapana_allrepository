@@ -1,11 +1,15 @@
-
-// process.on("uncaughException")
+process.on("uncaughtException", (error) => {
+  console.log("uncaughtException", error);
+  process.exit(1);
+});
 
 import "dotenv/config";
 import app from "./app";
 import { connectDatabase } from "./config/db.config";
 import ENV_CONFIG from "./config/env.config";
 import { verifyMailServerConnection } from "./config/nodemailer.config";
+import mongoose from "mongoose";
+
 
 
 //dotenv.config()
@@ -19,16 +23,38 @@ connectDatabase(DB_URI);
 
 
 //listen 
-app.listen(PORT, () =>{
-    console.log(`Server is running at http://localhost:${PORT}`);
-    verifyMailServerConnection();
-
+const server = app.listen(PORT, async () => {
+  console.log(`Server is running at http://localhost:${PORT}`);
+  await verifyMailServerConnection();
 });
 
-//development ctrl + c
-// process.on("unhandledRejection", (error) =>{
-//     console.log("unhandledRejection")
-// })
+process.on("unhandledRejection", (error) => {
+  console.log("unhandledRejection", error);
+  server.close(async () => {
+    await mongoose.disconnect();
+    process.exit(1); //
+  });
+});
+
+// development ctrl + c
+process.on("SIGINT", () => {
+  console.log("SIGINT ");
+  server.close(async (error) => {
+    console.log(error);
+    await mongoose.disconnect();
+    process.exit(0); //
+  });
+});
+
+// production (pm2 , docker ...)
+process.on("SIGTERM", () => {
+  console.log("SIGTERM ");
+  server.close(async (error) => {
+    console.log(error);
+    await mongoose.disconnect();
+    process.exit(0); //
+  });
+});
 
 
 
