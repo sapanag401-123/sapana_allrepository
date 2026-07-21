@@ -6,20 +6,145 @@ import Category from "../models/category.model";
 import Brand from "../models/brand.model";
 import { deleteFile, upload } from "../utils/cloudinary.utils";
 import { sendResponse } from "../utils/sendResponse.utils";
+import { getPagination } from "../utils/pagination.utils";
+
 
 const folder = "/products";
 
 //* get all
 export const getAll = catchAsync(async (req, res) => {
-  const products = await Product.find({});
+  //filter
+      const { 
+        query, 
+        order = "DESC", 
+        sortBy = "createdAt",
+        page = 1,
+        limit = 10,
+       } = req.query;
+  
+       const currentPage = Number(page);
+       const perPage = Number(limit);
+       const skip = (currentPage - 1) * perPage;
+  
+  
+      const filter: Record<string, any> = {};
+  
+      if (query){
+        // filter.name = {
+          // $regex: query,
+          // $options: "i",
+          filter.$or = [
+            {
+              name: {
+               $regex: query,
+               $options: "i",
+  
+              },
+            },
+            {
+              description:{
+                $regex: query,
+               $options: "i",
+              },
+            },
+          ];
+          }
+      const products = await Product.find(filter)
+      .limit(perPage)
+      .skip(skip)
+      .sort({
+      [sortBy as string]: order === "DESC" ? -1 : 1,
+      });
+  
+      const totalCount = await Product.countDocuments(filter);
+  
+       sendResponse(res, {
+        message: "Products fetched",
+        data: {
+          products,
+          pagination: getPagination({
+            totalCount,
+            perPage,
+            currentPage,
+          }),
+        },
+        statusCode: 200,
+      });
+    }
+  );
+//   //filter
+//     const { query, category, brand, maxPrice, minPrice } = req.query;
+//     const filter: any = {};
 
-  sendResponse(res, {
-    data: products,
-    message: "Products fetched",
-    statusCode: 200,
-  });
-});
+//     if (query){
+//       // filter.name = {
+//         // $regex: query,
+//         // $options: "i",
+//         filter.$or = [
+//           {
+//             name: {
+//              $regex: query,
+//              $options: "i",
+
+//             },
+//           },
+//           {
+//             description:{
+//               $regex: query,
+//              $options: "i",
+//             },
+//           },
+//         ];
+//         }
+
+  
+
+
+// //category
+// if (category) {
+//   filter.category = Category;
+// }
+
+// //brand
+// if (brand) {
+//   filter.brand = brand;
+// }
+
+
+// //price range
+// if(minPrice || maxPrice){
+//   const low = Number(minPrice);
+//   const high = Number(maxPrice);
+
+//   if (low){
+//     filter.price = {
+//       $gte: low,
+//     };
+//   }
+
+//   if (high){
+//     filter.price = {
+//       $gte: high,
+//     };
+//   }
+
+//   if (low && high){
+//     filter.price = {
+//       $lte: Highlight,
+//       $gte: low,
+//     };
+//   }
+// }
+// const products = await Product.find(filter);
+// sendResponse(res, {
+//       message: "products fetched",
+//       data: products,
+//       statusCode: 200,
+//     });
+//   },
+// );
 //* get by id
+
 export const getById = catchAsync(async (req, res) => {
   const { id } = req.params;
   const product = await Product.findOne({ _id: id });
@@ -35,6 +160,8 @@ export const getById = catchAsync(async (req, res) => {
 
 //* create
 export const create = catchAsync(async (req, res) => {
+  console.log("BODY:", req.body);
+  console.log("FILES:", req.files);
   const { cover_image, images } = req.files as {
     cover_image: Express.Multer.File[];
     images: Express.Multer.File[];

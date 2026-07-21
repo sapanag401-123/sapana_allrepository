@@ -4,6 +4,7 @@ import appError from "../utils/appError.utils";
 import { catchAsync } from "../utils/catchAsync.utils";
 import { upload } from "../utils/cloudinary.utils";
 import { sendResponse } from "../utils/sendResponse.utils";
+import { getPagination } from "../utils/pagination.utils";
 
 
 const uploadFolder = "/brands";
@@ -57,11 +58,29 @@ if (!file) {
 });
 
 // Get All Brands
+//total 100
+//page 1 limit:10   skip:0  ->10  id 1-10
+//page 2 limit:10  skip: 10 ->10  id 11-20
+//page 3 limit:10  skip: 10 ->20  id 21-30
+//page 4 limit:10  skip: 10 ->30  id 31-40
+
 export const getAll = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
 
    //filter
-    const { query, order = "DESC", sortBy = "createdAt" } = req.query;
+    const { 
+      query, 
+      order = "DESC", 
+      sortBy = "createdAt",
+      page = 1,
+      limit = 10,
+     } = req.query;
+
+     const currentPage = Number(page);
+     const perPage = Number(limit);
+     const skip = (currentPage - 1) * perPage;
+
+
     const filter: Record<string, any> = {};
 
     if (query){
@@ -84,15 +103,28 @@ export const getAll = catchAsync(
           },
         ];
         }
-    const brands = await Brand.find(filter).sort({
-      [sortBy as string]: order === "DESC" ? -1 : 1,
+    const brands = await Brand.find(filter)
+    .limit(perPage)
+    .skip(skip)
+    .sort({
+    [sortBy as string]: order === "DESC" ? -1 : 1,
     });
-    sendResponse(res, {
+
+    const totalCount = await Brand.countDocuments(filter);
+
+     sendResponse(res, {
       message: "Brands fetched",
-      data: brands,
+      data: {
+        brands,
+        pagination: getPagination({
+          totalCount,
+          perPage,
+          currentPage,
+        }),
+      },
       statusCode: 200,
     });
-  },
+  }
 );
 // test
 

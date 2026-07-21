@@ -35,24 +35,24 @@ router.get("/brand/:brandId", getByBrand);
 router.get("/:id", getById);
 
 // Admin Routes
-router.post(
-  "/",
-  upload.fields([
-    {
-      name: "cover_image",
-      maxCount: 1,
-    },
-    {
-      name: "images",
-      maxCount: 5,
-    },
-  ]),
-  authenticate(All_Admins),
-  create,
-);
+// router.post(
+//   "/",
+//   upload.fields([
+//     {
+//       name: "cover_image",
+//       maxCount: 1,
+//     },
+//     {
+//       name: "images",
+//       maxCount: 5,
+//     },
+//   ]),
+//   authenticate(All_Admins),
+//   create,
+// );
 
 //* update
-router.put(
+router.post(
   "/",
   upload.fields([
     {

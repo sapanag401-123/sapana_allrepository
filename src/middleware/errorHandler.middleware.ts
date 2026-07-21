@@ -16,6 +16,12 @@ export const errorHandler = (
     statusCode = 400;
     status = "fail";
   }
+  // if (error instanceof jsonwebTokenError) {
+  //   message = "Invalid token.login required";
+  //   statusCode = 401;
+  // }
+
+
 
   res.status(statusCode).json({
     message,

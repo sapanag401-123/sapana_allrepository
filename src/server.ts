@@ -1,3 +1,6 @@
+
+// process.on("uncaughException")
+
 import "dotenv/config";
 import app from "./app";
 import { connectDatabase } from "./config/db.config";
@@ -21,5 +24,12 @@ app.listen(PORT, () =>{
     verifyMailServerConnection();
 
 });
+
+//development ctrl + c
+// process.on("unhandledRejection", (error) =>{
+//     console.log("unhandledRejection")
+// })
+
+
 
 //npm run start

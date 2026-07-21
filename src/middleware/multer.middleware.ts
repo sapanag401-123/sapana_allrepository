@@ -5,7 +5,7 @@ import AppError from "../utils/appError.utils";
 
 export const uploader = ()=>{
     const folder = "uploads/";
-    const file_size = 5 * 1024 * 1024; //5mb
+    const file_size = 10 * 1024 * 1024; //5mb
 
     if(!fs.existsSync(folder)){
         fs.mkdirSync(folder, {recursive: true});
